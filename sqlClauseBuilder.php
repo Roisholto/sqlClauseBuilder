@@ -1,6 +1,5 @@
 <?php
-namespace Api ; // individual
-//Class ot handle building clause part of a query just an=s the name suggests
+//Class to handle building clause part of a query just as the name suggests
 class sqlClauseBuilder{
 
 public $logic_operators = [
