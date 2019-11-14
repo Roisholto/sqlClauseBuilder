@@ -1,4 +1,5 @@
 <?php
+namespace Api ; // individual
 //Class ot handle building clause part of a query just an=s the name suggests
 class sqlClauseBuilder{
 
@@ -41,7 +42,7 @@ function __construct($searchable)
 
             $clausebuilder = new sqlClauseBuilder($searchable_params) ;
             $search = ['name'=>['data'=>['Bob%'],'factor'=>'like'] ]  ]
-            $clause = $clausebuilder->build($build) ;  // returns ['clause'=> 'merchants.name LIKE ?', 'binds'=>[ ['Bob%',PDO::PARAM_STR] ] )             
+            $clause = $clausebuilder->build($build) ;  // returns ['clause'=> 'merchants.name LIKE ?', 'binds'=>[ ['Bob%',PDO::PARAM_STR] ] )
     */
 
 
@@ -66,7 +67,6 @@ private function test_key($arr)
 
     foreach($arr as $k=> $v)
         {
-
         if(gettype($k) == 'integer')
             {
             // then $v is either a string or an array i.e 0=>['col'=>[data]] or 0=>'operator'
@@ -114,8 +114,9 @@ private function process_col($col,$dt) : array
     $data = (isset($dt['data']) and is_array($dt['data']) ) ?  $dt['data'] : [] ;
     $factor = ( isset($dt['factor']) and in_array($dt['factor'], $this->searchable[$col]['factors']) ) ? $dt['factor'] : null;
     $str = '' ;
+
     if(!$factor)
-        throw new \Exception("Factor \" {$dt['factor']} \" not found ");
+        throw new \Exception("Factor \" $factor \" not found ");
 
     if (count($data)>0)
         {
@@ -129,18 +130,23 @@ private function process_col($col,$dt) : array
             // ==1 or $factor['many']== 0
             if($factor['many'] == 1)
                 {
-                for($i=0; $i< count ($data); $i++)
+                for($i=0; $i< count($data); $i++)
                     {
                     $binded[] = [$data[$i], $bindvalas ] ;
                     $placeholder[] = '?' ;
+                    // echo 'looped through data '.$i ;
                     }
+                // since IN operator is of type x in y
+                // y here is a single string ;
+                // thus x in (?,?,?,?, ...)
+                if($symbol == 'IN')
+                    $placeholder = [implode(', ',$placeholder)] ;
 
                 }
             else
                 {
                 $binded[] = [$data[0], $bindvalas ] ; // select only the first data ;
                 $placeholder[] = '?' ;
-
                 }
 
             $str.= vsprintf($format, array_merge([],[$db_col], $placeholder) )  ;
@@ -151,8 +157,10 @@ private function process_col($col,$dt) : array
             // ideally for is null and ! is null ;
             $str.= sprintf($format, $db_col ) ;
             }
-
-
+        }
+    else
+        {
+        throw new \Exception("Expecting \" data \" as an array ");
         }
 
     return  ['clause'=>$str, 'binds'=>$binded] ;
