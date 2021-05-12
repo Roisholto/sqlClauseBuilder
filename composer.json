@@ -1,5 +1,5 @@
 {
-    "name": "lifecenta/sql-clause-builder",
+    "name": "roi/sql-clause-builder",
     "description": "Build Sql clause from php arrays",
     "type": "library",
     "require-dev": {
