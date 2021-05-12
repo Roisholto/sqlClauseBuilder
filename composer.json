@@ -1,0 +1,18 @@
+{
+    "name": "lifecenta/sql-clause-builder",
+    "description": "Build Sql clause from php arrays",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "authors": [
+        {
+            "name": "roisholto",
+            "email": "soetanrules@hotmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+      "psr-4": {"Roi\\SqlClauseBuilder\\": "src/"}
+      }
+}
